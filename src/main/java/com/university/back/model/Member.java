@@ -35,6 +35,7 @@ public class Member {
         role = "student";
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
         surname = surname.substring(0, 1).toUpperCase() + surname.substring(1);
+        group = group.toUpperCase();
         visitCounter = 1;
     }
 }

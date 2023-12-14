@@ -14,13 +14,17 @@ public class MemberService {
 
     public HashMap<String, String> saveMember(Member member) {
         HashMap<String, String> response = new HashMap<>();
-        if (repository.findMemberByLogin(member.getLogin()) == null)
+        member.refactor();
+        if (repository.findMemberByLogin(member.getLogin()) == null) {
             repository.save(member);
+            setMemberData(response, member);
+        }
+
         else
             response.put("error_login", "Данный логин уже занят");
         return response;
     }
-    public HashMap<String, String> checkMember(String login, String password) {
+    public HashMap<String, String> checkMember(String login, String password, boolean visit) {
         HashMap<String, String> response = new HashMap<>();
         var member = repository.findMemberByLogin(login);
         if (member == null) {
@@ -28,8 +32,10 @@ public class MemberService {
             return response;
         }
         if (member.getPassword().equals(password)) {
-            member.increaseVisitCounter();
+            if (visit)
+                member.increaseVisitCounter();
             repository.save(member);
+            setMemberData(response, member);
         }
         else
             response.put("error_password", "Неправильный пароль");
@@ -40,5 +46,14 @@ public class MemberService {
     }
     public Member getMemberByLogin(String login) {
         return repository.findMemberByLogin(login);
+    }
+
+    private void setMemberData(HashMap<String, String> response, Member member) {
+        response.put("name", member.getName());
+        response.put("surname", member.getSurname());
+        response.put("login", member.getLogin());
+        response.put("password", member.getPassword());
+        response.put("group", member.getGroup());
+        response.put("role", member.getRole());
     }
 }
