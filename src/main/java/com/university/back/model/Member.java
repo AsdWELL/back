@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @Getter
@@ -27,6 +25,8 @@ public class Member {
     private String role;
     @Column(name = "visit_counter")
     private int visitCounter;
+    @Column(name = "session_id")
+    private String sessionId;
 
     public void increaseVisitCounter() {
         visitCounter++;
@@ -37,5 +37,9 @@ public class Member {
         surname = surname.substring(0, 1).toUpperCase() + surname.substring(1);
         group = group.toUpperCase();
         visitCounter = 1;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

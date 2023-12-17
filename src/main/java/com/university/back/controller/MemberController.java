@@ -16,14 +16,27 @@ import java.util.HashMap;
 public class MemberController {
     private MemberService service;
 
-    @PostMapping(value = "/saveStudent", consumes = {"application/json"}, produces = "application/json")
+    @PostMapping(value = "/saveStudent", consumes = "application/json", produces = "application/json")
     public HashMap<String, String> saveMember(@RequestBody Member member) {
         return service.saveMember(member);
     }
 
-    @PostMapping(value = "/checkMember", consumes = {"application/x-www-form-urlencoded"}, produces ="application/json")
-    public HashMap<String, String> checkMember(@RequestParam("login") String login, @RequestParam("password") String password, @RequestParam("visit") boolean visit) {
-        return service.checkMember(login, password, visit);
+    @PostMapping(value = "/checkMember", consumes = "application/x-www-form-urlencoded", produces ="application/json")
+    public HashMap<String, String> checkMember(@RequestParam("login") String login, @RequestParam("password") String password) {
+        return service.checkMember(login, password);
+    }
+
+    @GetMapping(value = "/checkSession", produces = "application/x-www-form-urlencoded")
+    public String checkSessionId(@RequestParam("sessionId") String sessionId) {
+        return String.valueOf(service.getMemberBySessionId(sessionId) != null);
+    }
+
+    @GetMapping(value = "/memberData", produces = "application/json")
+    public HashMap<String, String> getMemberData(@RequestParam("sessionId") String sessionId) {
+        var member = service.getMemberBySessionId(sessionId);
+        if (member == null)
+            return null;
+        return service.getMemberData(member);
     }
 
     @GetMapping(value = "/date", produces = "application/x-www-form-urlencoded")

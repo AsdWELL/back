@@ -9,4 +9,5 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     void deleteMemberByLogin(String login);
     Member findMemberByLogin(String login);
     List<Member> findAllByGroup(String group);
+    Member findMemberBySessionId(String sessionId);
 }
