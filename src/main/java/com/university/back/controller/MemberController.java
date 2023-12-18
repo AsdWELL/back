@@ -1,18 +1,25 @@
 package com.university.back.controller;
 
+import com.university.back.model.Form;
 import com.university.back.model.Member;
 import com.university.back.service.MemberService;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/student")
 @AllArgsConstructor
 @CrossOrigin
+@Slf4j
 public class MemberController {
     private MemberService service;
 
@@ -32,7 +39,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/memberData", produces = "application/json")
-    public HashMap<String, String> getMemberData(@RequestParam("sessionId") String sessionId) {
+    public HashMap<String, String> getMemberData(@RequestParam("sessionId") String sessionId) throws IOException {
         var member = service.getMemberBySessionId(sessionId);
         if (member == null)
             return null;
@@ -43,5 +50,19 @@ public class MemberController {
     public String getDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
         return LocalDateTime.now().format(formatter);
+    }
+
+    @PostMapping(value = "/updateMember", consumes = "multipart/form-data", produces = "application/json")
+    public HashMap<String, String> updateMember(@RequestPart("file") @Nullable MultipartFile file, @RequestPart("login") String login, @RequestPart("member") Member member) throws IOException {
+        return service.updateMember(login, member, file);
+    }
+    @GetMapping(value = "/myGroup", produces = "application/json")
+    public List<Member> getMembersByGroup(@RequestParam("group") String group) {
+        return service.getMembersByGroup(group.toUpperCase());
+    }
+
+    @GetMapping(value = "/members", produces = "application/json")
+    public List<Member> getAllMembers(@RequestParam("sessionId") String sessionId) {
+        return service.getAllMembers(sessionId);
     }
 }

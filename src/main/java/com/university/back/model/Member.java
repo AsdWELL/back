@@ -1,13 +1,13 @@
 package com.university.back.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "members")
 public class Member {
     @Column(name = "first_name")
@@ -27,19 +27,23 @@ public class Member {
     private int visitCounter;
     @Column(name = "session_id")
     private String sessionId;
+    @Lob
+    @Column(name = "img", columnDefinition = "longblob")
+    private byte[] img;
 
     public void increaseVisitCounter() {
         visitCounter++;
     }
     public void refactor() {
-        role = "student";
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
         surname = surname.substring(0, 1).toUpperCase() + surname.substring(1);
-        group = group.toUpperCase();
-        visitCounter = 1;
+        if (group != null)
+            group = group.toUpperCase();
     }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public void setDefaults() {
+        visitCounter = 1;
+        role = "student";
+        img = null;
+        refactor();
     }
 }
