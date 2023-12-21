@@ -2,7 +2,9 @@ package com.university.back.controller;
 
 import com.university.back.model.Form;
 import com.university.back.model.Member;
+import com.university.back.model.News;
 import com.university.back.service.MemberService;
+import com.university.back.service.NewsService;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.List;
 @Slf4j
 public class MemberController {
     private MemberService service;
+    private NewsService newsService;
 
     @PostMapping(value = "/saveStudent", consumes = "application/json", produces = "application/json")
     public HashMap<String, String> saveMember(@RequestBody Member member) {
@@ -64,5 +67,20 @@ public class MemberController {
     @GetMapping(value = "/members", produces = "application/json")
     public List<Member> getAllMembers(@RequestParam("sessionId") String sessionId) {
         return service.getAllMembers(sessionId);
+    }
+
+    @GetMapping(value = "/updateNews")
+    public void updateNews(@RequestParam("name") News news){
+        newsService.updateNewsById(news);
+    }
+
+    @GetMapping(value = "/deleteNews")
+    public void deleteNews(@RequestParam("id") long id){
+        newsService.deleteNewsById(id);
+    }
+
+    @GetMapping(value = "getAllNews")
+    public List<News> getAllNews(@RequestParam("id") long id){
+        return newsService.getAllNews(id);
     }
 }
